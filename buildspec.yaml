@@ -1,18 +1,22 @@
 version: 0.2
+
 phases:
   install:
-    runtime-versions:
-      nodejs: 18
     commands:
-      - cd frontend
+      - ls -la
+      - echo "Cleaning node_modules and lock files..."
+      - rm -rf node_modules package-lock.json
+      - echo "Installing dependencies..."
       - npm install
   build:
     commands:
       - npm run build
+      - ls -la
   post_build:
     commands:
-      - echo "Build completed"
+      - aws s3 sync ./dist s3://buyakaa-project --delete
+
 artifacts:
   files:
     - "**/*"
-  base-directory: frontend/build
+  base-directory: "dist"
